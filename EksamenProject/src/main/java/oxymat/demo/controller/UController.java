@@ -7,11 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import oxymat.demo.*;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 @Controller
 public class UController {
 
@@ -19,48 +14,16 @@ public class UController {
     @Autowired
     private UserRepository users = new UserRepository();
 
-    @Autowired
-    private ProductRepository products = new ProductRepository();
-
-
-    @Autowired
-    private OrderRepository orders = new OrderRepository();
-
-
-    private List<OrderDisplay> searchResults = new ArrayList<OrderDisplay>();
-
-    /** Create User object called activeUser. activeUser contains "null" and 0's, just to act as a temp loginSession.
-        When the user login into the index page, this activeUser will be replaced with information from the logged in user
-        making the login-menu disappear when the user go back to the homepage.
-     **/
-    private User activeUser = new User(0, "null", "null", "null", "null", "null", "null", 0);
-
-    private User logoutUser = new User(0, "null", "null", "null", "null", "null", "null", 0);
+    private User activeUser = new User(0, "null", "null");
 
 
     @GetMapping("/")
     public String index(Model model, User users) {
         users = activeUser;
-        model.addAttribute("us", model);
         model.addAttribute("users", users);
-        model.addAttribute("logout", logoutUser);
-
-        System.out.println("activeUser: " + activeUser.getFirstname());
+        model.addAttribute("us", model);
 
         return "index";
-    }
-
-    @PostMapping("/logout")
-    public String logout(Model model){
-        System.out.println("Goodbye " + activeUser.getFirstname());
-        activeUser = logoutUser;
-        Date dNow = new Date( );
-        SimpleDateFormat ft =
-                new SimpleDateFormat ("E dd.MM.yyyy 'at' hh:mm:ss a" );
-        System.out.println("You're logged out "+ft.format(dNow));
-        System.out.println(" ");
-
-        return "redirect:/";
     }
 
     @ModelAttribute("login")
@@ -73,14 +36,8 @@ public class UController {
     @PostMapping("/login")
     public String login(@ModelAttribute("login") Login login, Model model){
 
-        activeUser = users.findUserByUsername(login.getUsername(), login.getPassword());
-        System.out.println("Welcome " + activeUser.getFirstname());
-            Date dNow = new Date( );
-            SimpleDateFormat ft =
-            new SimpleDateFormat ("E dd.MM.yyyy 'at' hh:mm:ss a" );
-        System.out.println("You're logged in "+ft.format(dNow));
-        System.out.println(" ");
-        
+        activeUser = new User(0,login.getUsername(),login.getPassword());
+        System.out.println(login.getUsername()+" : "+login.getPassword());
         return "redirect:/";
     }
 
@@ -111,68 +68,32 @@ public class UController {
         return "redirect:/";
     }
 
+    @PostMapping("/delete")
+    public String delete(@ModelAttribute User user){
 
-    /** start here **/
-    @GetMapping("/products")
-    public String products(Model model) {
+        users.delete(user.getId());
+        System.out.println("deleted : "+user.getId());
 
-        model.addAttribute("products", products.readAll());
-
-        return "products";
+        return "redirect:/";
     }
 
+    @GetMapping("/update")
+    public String update(Model model){
 
-    @GetMapping("/orders")
-    public String orders(Model model) {
+        model.addAttribute("user", new User());
 
-        model.addAttribute("orders", orders.displayAll());
-        model.addAttribute("search", new Order());
-
-        System.out.println(orders.displayAll().toString());
-
-
-        return "orders";
+        return "update";
     }
 
+    @PostMapping("/update")
+    public String update(@ModelAttribute User update){
 
 
-    @GetMapping("/users")
-    public String users(Model model) {
+        users.update(update);
+        System.out.println(update.getUsername()+" "+update.getNewpass()+" "+update.getPassword1()+" "+update.getPassword2()+" ");
 
-        System.out.println("Welcome " + activeUser.getFirstname());
-        model.addAttribute("users", users.readAll());
-
-        return "users";
+        return "redirect:/";
     }
 
-    @GetMapping("/search")
-    public String searchOrdersById(@RequestParam (value= "id", required = true) String id, Model model) {
-
-        searchResults.clear();
-
-        searchResults.add(orders.findByOrderNumber(id));
-
-        model.addAttribute("search", new Order());
-        model.addAttribute("searchResults", searchResults);
-        return "searchResult";
-    }
-
-
-    @PostMapping("/search")
-    public String searchOrdersById(@ModelAttribute Order order, Model model) {
-        model.addAttribute("ordersList", order);
-        return "redirect:/orders";
-    }
-
-
-    @GetMapping("/stock")
-    public String stock(Model model) {
-
-        model.addAttribute("us", model);
-
-        return "stock";
-    }
-
-    /** end here **/
 
 }

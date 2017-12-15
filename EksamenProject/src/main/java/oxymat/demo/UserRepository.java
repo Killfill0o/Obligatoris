@@ -8,76 +8,63 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 
 @Repository
-public class UserRepository implements ICrud<User> {
+public class UserRepository {
 
     @Autowired
     private JdbcTemplate jdbc;
 
 
 
-    @Override
+
     public void create(User user) {
-        int display = 1;
-        SqlRowSet users = jdbc.queryForRowSet("SELECT * FROM users");
-        while(users.next()){
-            if(display>3){
-               display = 1;
-            }
-            System.out.println("display test: "+display);
-            display++;
-        }
-        if(display>3){
-            display = 1;
-        }
-        jdbc.update("INSERT INTO users (firstname, lastname, username, password, mail, phone, display) VALUES ('"+ user.getFirstname() + "','" + user.getLastname() + "','" + user.getUsername() + "','" +user.getPassword()+"','"+user.getMail()+"','"+user.getPhone() +"','"+display+"')");
+
+        jdbc.update("INSERT INTO users (id, username, password) VALUES ('"+ user.getId() + "','" + user.getUsername() + "','" +user.getPassword()+"')");
     }
 
-    @Override
+
     public User read(int id) {
         SqlRowSet user = jdbc.queryForRowSet("SELECT * FROM users WHERE id = '" + id + "'");
         while(user.next()){
-            return new User(user.getInt("id"), user.getString("firstname"), user.getString("lastname"), user.getString("mail"), user.getString("phone"), user.getString("username"), user.getString("password"), user.getInt("display"));
+            return new User(user.getInt("id"), user.getString("username"), user.getString("password"));
         }
         return null;
     }
 
-    @Override
+    /*
     public ArrayList<User> readAll() {
         ArrayList<User> userList = new ArrayList<User>();
         SqlRowSet user = jdbc.queryForRowSet("SELECT * FROM users");
-        User us = new User();
-        int count = 0;
-        System.out.println(" ");
-        System.out.println("Display user: x  ###  ID  FULL NAME   EMAIL              PHONE");
-        System.out.println(" ");
+
+
         while(user.next()){
-            userList.add(new User(user.getInt("id"), user.getString("firstname"), user.getString("lastname"), user.getString("mail"), user.getString("phone"), user.getString("username"), user.getString("password"), user.getInt("display")));
-            us.setDisplay(user.getInt("display"));
-            count += 1;
-            System.out.println("Display user: "+us.getDisplay()+"  ###  "+user.getInt("id")+"   "+user.getString("firstname")+" "+user.getString("lastname")+"  "+user.getString("mail")+"  "+user.getString("phone"));
+            userList.add(new User(user.getInt("id"), user.getString("username"), user.getString("password")));
         }
-        System.out.println(" ");
-        System.out.println("Display "+count+" users from database");
-        System.out.println(" ");
 
 
         return userList;
     }
+*/
 
-    @Override
-    public void update(User user) {
+    public void update(User update) {
+        String newp = "null";
+        if(update.getPassword().equals(update.getNewpass())) {
+            if (update.getPassword1().equals(update.getPassword2())) {
+                newp = update.getPassword1();
+            } else {
+                newp = update.getPassword();
+            }
+        }
+        else{
+            newp = update.getPassword();
+        }
+
         jdbc.update("UPDATE users SET " +
-                "firstname = '" + user.getFirstname()   + "'," +
-                "lastname  = '" + user.getLastname()    + "'," +
-                "username  = '" + user.getUsername()    + "'," +
-                "password  = '" + user.getPassword()    + "'," +
-                "mail      = '" + user.getMail()        + "'," +
-                "phone     = '" + user.getPhone()       + "'," +
-                "display   = '" + user.getDisplay()     + "+" +
-                "' WHERE id = '" + user.getId() +"'");
+                "username  = '" + update.getUsername()    + "'," +
+                "password  = '" + newp    + "'," +
+                "' WHERE id = '" + update.getId() +"'");
     }
 
-    @Override
+
     public void delete(int id) {
         jdbc.update("DELETE FROM users WHERE id ='" + id +"'");
     }
@@ -85,7 +72,7 @@ public class UserRepository implements ICrud<User> {
     public User findUserByUsername(String username, String password){
         SqlRowSet user = jdbc.queryForRowSet("SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'");
         while(user.next()){
-            return new User(user.getInt("id"), user.getString("firstname"), user.getString("lastname"), user.getString("mail"), user.getString("phone"), user.getString("username"), user.getString("password"), user.getInt("display"));
+            return new User(user.getInt("id"), user.getString("username"), user.getString("password"));
         }
         return null;
     }

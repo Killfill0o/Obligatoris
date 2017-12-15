@@ -4,27 +4,20 @@ package oxymat.demo;
 public class User {
 
     private int id;
-    private String firstname;
-    private String lastname;
-    private String mail;
-    private String phone;
-    private int display = 1;
     private String username;
     private String password;
+    private String password1;
+    private String password2;
+    private String newpass;
 
     public User(){
 
     }
 
-    public User(int id, String firstname, String lastname, String mail, String phone, String username, String password, int display){
+    public User(int id, String username, String password){
         this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.mail = mail;
-        this.phone = phone;
         this. username = username;
         this.password = password;
-        this.display = display;
     }
 
     // Getters
@@ -34,41 +27,7 @@ public class User {
 
     public void setId(int value) {this.id = value;}
 
-    public String getFirstname(){
-        return firstname;
-    }
-
-    public void setFirstname(String value){
-        this.firstname = value;
-    }
-
-    public String getLastname(){
-        return lastname;
-    }
-
-    public void setLastname(String value){
-        this.lastname = value;
-    }
-
-
-    public String getMail(){
-        return mail;
-    }
-
-    public void setMail(String value){
-        this.mail = value;
-    }
-
-
-    public String getPhone(){
-        return phone;
-    }
-
-    public void setPhone(String value){
-        this.phone = value;
-    }
-
-    public String getUsername(){
+       public String getUsername(){
         return username;
     }
 
@@ -84,10 +43,28 @@ public class User {
         this.password = value;
     }
 
-    public int getDisplay(){ return display; }
+    public String getPassword1(){
+        return password1;
+    }
 
-    public void setDisplay(int value){
-        this.display = value;
+    public void setPassword1(String value){
+        this.password1 = value;
+    }
+
+    public String getPassword2(){
+        return password2;
+    }
+
+    public void setPassword2(String value){
+        this.password2 = value;
+    }
+
+    public String getNewpass(){
+        return newpass;
+    }
+
+    public void setNewpass(String value){
+        this.newpass = value;
     }
 
 }

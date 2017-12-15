@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
 
-        <title>CREATE</title>
+        <title>UPDATE</title>
         <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'/>
         <link href='https://fonts.googleapis.com/css?family=Abel' rel='stylesheet'/>
         <link rel="stylesheet" type="text/css"
@@ -19,9 +19,11 @@
 
             <tr>
                 <td><input type="text" th:field="*{username}" placeholder="User Name"/></td>
-                <td><input type="password" th:field="*{password}" placeholder="Password"/></td>
+                <td><input type="password" th:field="*{newpass}" placeholder="Password"/></td>
+                <td><input type="password" th:field="*{password1}" placeholder="Password"/></td>
+                <td><input type="password" th:field="*{password2}" placeholder="Password"/></td>
 
-                <td><input type="submit" value="Create" class="btn"/></td>
+                <td><input type="submit" value="Update" class="btn"/></td>
                 <td><a href="/"><input type="button" value="Cancel" /></a></td>
             </tr>
 
